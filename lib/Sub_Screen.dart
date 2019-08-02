@@ -5,6 +5,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 //import 'package:location/location.dart';
 import 'package:geolocator/geolocator.dart';
 final _firestore = Firestore.instance;
+var geolocator = Geolocator();
+var MyLatitud=0.0;
+var MyLonGitude=0.0;
+var distance=0.0;
 var items = List<String>();
 var all=[{}];
 var one=[{}];
@@ -15,6 +19,21 @@ class categorie extends StatefulWidget {
 }
 
 class _categorieState extends State<categorie> {
+  void getCurrentPosition(double X,double Y)async{
+    Position position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    MyLatitud=position.latitude;
+    MyLonGitude=position.longitude;
+//    var geolocator = Geolocator();
+//    distance= await Geolocator().distanceBetween(MyLatitud, MyLonGitude, X, Y);
+
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getCurrentPosition(0, 0);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,10 +44,7 @@ class _categorieState extends State<categorie> {
 }
 class GetData extends StatelessWidget {
 //  var currentLocation = LocationData;
-  var geolocator = Geolocator();
-  var MyLatitud=0.0;
-  var MyLonGitude=0.0;
-  var distance=0.0;
+
 //void getlocationn(){
 //  var location = new Location();
 //  location.onLocationChanged().listen((LocationData currentLocation) {
@@ -39,14 +55,8 @@ class GetData extends StatelessWidget {
 //  });
 //
 //}
-  void getCurrentPosition(double X,double Y)async{
-    Position position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    MyLatitud=position.latitude;
-    MyLonGitude=position.longitude;
-    var geolocator = Geolocator();
-    distance= await Geolocator().distanceBetween(MyLatitud, MyLonGitude, X, Y);
 
-  }
+
 
   List DetailsList =[{}];
   @override
@@ -64,14 +74,14 @@ class GetData extends StatelessWidget {
             final delivery= msg.data['delivey'];
             final X= msg.data['X'];
             final Y= msg.data['Y'];
-            getCurrentPosition(X, Y);
+
 
           DetailsList.add({
             'title':title,
             'phone':phone,
             'image':image,
             'delivery':delivery,
-            'distance':distance,
+            'distance':MyLatitud,
 
           });
           }
